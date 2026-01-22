@@ -27,7 +27,7 @@ runs:
     #   uses: orbitcluster/oc-cicd-secretscanner-workflow@v2
 
     - name: SonarQube Check
-      if: github.event_name == 'push' || github.event_name == 'pull_request'
+      # if: github.event_name == 'push' || github.event_name == 'pull_request'
       uses: orbitcluster/oc-cicd-sonarscan-workflow@dk/fixingsonarscan
       with:
         sonar-source-path: "src"
