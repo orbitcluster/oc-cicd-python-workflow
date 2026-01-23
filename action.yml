@@ -5,14 +5,21 @@ inputs:
     description: "Directory containing tests"
     required: true
     default: "test"
+  sonar-source-path:
+    description: "Path to the source code for SonarQube scan"
+    required: false
+    default: "src"
+  sonar-password:
+    description: "SonarQube admin password (pass from secrets)"
+    required: true
 runs:
   using: "composite"
   steps:
     - name: Checkout
-      uses: actions/checkout@v6
+      uses: actions/checkout@v4
 
     - name: Set up Python
-      uses: actions/setup-python@v4
+      uses: actions/setup-python@v5
       with:
         python-version-file: ".python-version"
 
@@ -28,6 +35,8 @@ runs:
 
     - name: SonarQube Check
       if: github.event_name == 'push' || github.event_name == 'pull_request'
-      uses: orbitcluster/oc-cicd-sonarscan-workflow@v1
+      uses: orbitcluster/oc-cicd-sonarscan-workflow@fix/sonarscan
       with:
-        sonar-source-path: "src"
+        sonar-source-path: ${{ inputs.sonar-source-path }}
+        sonar-password: ${{ inputs.sonar-password }}
+
