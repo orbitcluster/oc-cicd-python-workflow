@@ -36,4 +36,3 @@ runs:
       uses: orbitcluster/oc-cicd-sonarscan-workflow@v1
       with:
         sonar-source-path: ${{ inputs.sonar-source-path }}
-
