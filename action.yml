@@ -33,7 +33,7 @@ runs:
 
     - name: SonarQube Check
       if: github.event_name == 'push' || github.event_name == 'pull_request'
-      uses: orbitcluster/oc-cicd-sonarscan-workflow@dk/fixingsonarscan
+      uses: orbitcluster/oc-cicd-sonarscan-workflow@v1
       with:
         sonar-source-path: ${{ inputs.sonar-source-path }}
 
