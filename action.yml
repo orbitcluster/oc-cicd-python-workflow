@@ -30,6 +30,9 @@ runs:
     - name: Secrets Check
       # if: github.event_name == 'push' || github.event_name == 'pull_request'
       uses: orbitcluster/oc-cicd-secretscanner-workflow@dk/usetrivyforsecret
+      with:
+        fetch-depth: 0
+        github-token: ${{ github.token }}
 
     - name: SonarQube Check
       if: github.event_name == 'push' || github.event_name == 'pull_request'
