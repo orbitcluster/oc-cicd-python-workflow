@@ -9,9 +9,7 @@ inputs:
     description: "Path to the source code for SonarQube scan"
     required: false
     default: "src"
-  sonar-password:
-    description: "SonarQube admin password (pass from secrets)"
-    required: true
+
 runs:
   using: "composite"
   steps:
@@ -35,8 +33,7 @@ runs:
 
     - name: SonarQube Check
       if: github.event_name == 'push' || github.event_name == 'pull_request'
-      uses: orbitcluster/oc-cicd-sonarscan-workflow@fix/sonarscan
+      uses: orbitcluster/oc-cicd-sonarscan-workflow@dk/fixingsonarscan
       with:
         sonar-source-path: ${{ inputs.sonar-source-path }}
-        sonar-password: ${{ inputs.sonar-password }}
 
