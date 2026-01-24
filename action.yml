@@ -5,6 +5,11 @@ inputs:
     description: "Directory containing tests"
     required: true
     default: "test"
+  sonar-source-path:
+    description: "Path to the source code for SonarQube scan"
+    required: false
+    default: "src"
+
 runs:
   using: "composite"
   steps:
@@ -12,7 +17,7 @@ runs:
       uses: actions/checkout@v6
 
     - name: Set up Python
-      uses: actions/setup-python@v4
+      uses: actions/setup-python@v5
       with:
         python-version-file: ".python-version"
 
@@ -30,4 +35,4 @@ runs:
       # if: github.event_name == 'push' || github.event_name == 'pull_request'
       uses: orbitcluster/oc-cicd-sonarscan-workflow@dk/fixingsonarscan
       with:
-        sonar-source-path: "src"
+        sonar-source-path: ${{ inputs.sonar-source-path }}
