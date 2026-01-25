@@ -44,7 +44,7 @@ jobs:
         uses: actions/checkout@v6
 
       - name: Secrets Check
-        uses: orbitcluster/oc-cicd-secretscanner-workflow@fix/accomodatewfcall
+        uses: orbitcluster/oc-cicd-secretscanner-workflow@v2
         with:
           github-token: ${{ github.token }}
 
@@ -57,7 +57,7 @@ jobs:
         uses: actions/checkout@v6
 
       - name: SonarQube Check
-        uses: orbitcluster/oc-cicd-sonarscan-workflow@fix/accomodatewfcall
+        uses: orbitcluster/oc-cicd-sonarscan-workflow@v1
         with:
           sonar-source-path: ${{ inputs.sonar-source-path }}
 
@@ -81,7 +81,7 @@ jobs:
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
 
       - name: SAST Scan
-        uses: orbitcluster/oc-cicd-sast-workflow@fix/accomodatewfcall
+        uses: orbitcluster/oc-cicd-sast-workflow@v1
         with:
           language: python
 
@@ -94,7 +94,7 @@ jobs:
         uses: actions/checkout@v6
 
       - name: Docker Build and Push
-        uses: orbitcluster/oc-cicd-docker-build-workflow@feat/addinitialcode
+        uses: orbitcluster/oc-cicd-docker-build-workflow@v1
         with:
           docker-build-path: .
           image-name: ${{ inputs.app-name }}

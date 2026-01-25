@@ -45,24 +45,24 @@ runs:
 
     - name: Secrets Check
       if: github.event_name == 'push' || github.event_name == 'pull_request'
-      uses: orbitcluster/oc-cicd-secretscanner-workflow@fix/accomodatewfcall
+      uses: orbitcluster/oc-cicd-secretscanner-workflow@v2
       with:
         github-token: ${{ github.token }}
 
     - name: SonarQube Check
       if: github.event_name == 'push' || github.event_name == 'pull_request'
-      uses: orbitcluster/oc-cicd-sonarscan-workflow@fix/accomodatewfcall
+      uses: orbitcluster/oc-cicd-sonarscan-workflow@v1
       with:
         sonar-source-path: ${{ inputs.sonar-source-path }}
 
     - name: SAST Scan
       if: github.event_name == 'push' || github.event_name == 'pull_request'
-      uses: orbitcluster/oc-cicd-sast-workflow@fix/accomodatewfcall
+      uses: orbitcluster/oc-cicd-sast-workflow@v1
       with:
         language: python
 
     - name: Docker Build
-      uses: orbitcluster/oc-cicd-docker-build-workflow@feat/addinitialcode
+      uses: orbitcluster/oc-cicd-docker-build-workflow@v1
       with:
         docker-build-path: .
         image-name: ${{ inputs.app-name }}
