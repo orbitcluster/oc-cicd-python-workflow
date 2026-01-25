@@ -1,0 +1,95 @@
+name: App CI/CD
+
+on:
+  workflow_call:
+    inputs:
+      app-name:
+        description: "Name of the image/app"
+        required: false
+        default: ${{ github.repository }}
+        type: string
+      appid:
+        description: "Application ID"
+        required: false
+        default: "0"
+        type: string
+      orgid:
+        description: "Organization ID"
+        required: false
+        default: "0"
+        type: string
+      buid:
+        description: "Business Unit ID"
+        required: false
+        default: "0"
+        type: string
+      test-directory:
+        description: "Directory containing tests"
+        required: false
+        default: "test"
+        type: string
+      sonar-source-path:
+        description: "Path to the source code for SonarQube scan"
+        required: false
+        default: "src"
+        type: string
+
+jobs:
+  secrets-check:
+    name: Secrets Check
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' || github.event_name == 'pull_request'
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Secrets Check
+        uses: orbitcluster/oc-cicd-secretscanner-workflow@fix/accomodatewfcall
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+  sonarqube-check:
+    name: SonarQube Check
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' || github.event_name == 'pull_request'
+    steps:
+      - name: SonarQube Check
+        uses: orbitcluster/oc-cicd-sonarscan-workflow@fix/accomodatewfcall
+        with:
+          sonar-source-path: ${{ inputs.sonar-source-path }}
+
+  # sast-scan:
+  #   name: SAST Scan
+  #   runs-on: ubuntu-latest
+  #   if: github.event_name == 'push' || github.event_name == 'pull_request'
+  #   steps:
+  #     - name: Set up Python
+  #       uses: actions/setup-python@v5
+  #       with:
+  #         python-version-file: ".python-version"
+
+  #     - name: Install dependencies
+  #       shell: bash
+  #       run: |
+  #         python -m pip install --upgrade pip
+  #         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+
+  #     - name: SAST Scan
+  #       uses: orbitcluster/oc-cicd-sast-workflow@v1
+  #       with:
+  #         language: python
+
+  # docker-build:
+  #   name: Docker Build
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Docker Build and Push
+  #       uses: orbitcluster/oc-cicd-docker-build-workflow@feat/addinitialcode
+  #       with:
+  #         docker-build-path: .
+  #         image-name: ${{ inputs.app-name }}
+  #         appid: ${{ inputs.appid }}
+  #         orgid: ${{ inputs.orgid }}
+  #         buid: ${{ inputs.buid }}
