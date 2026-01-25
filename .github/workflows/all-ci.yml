@@ -42,19 +42,20 @@ jobs:
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v6
-        with:
-          fetch-depth: 0
 
       - name: Secrets Check
         uses: orbitcluster/oc-cicd-secretscanner-workflow@fix/accomodatewfcall
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+          github-token: ${{ github.token }}
 
   sonarqube-check:
     name: SonarQube Check
     runs-on: ubuntu-latest
     if: github.event_name == 'push' || github.event_name == 'pull_request'
     steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v6
+
       - name: SonarQube Check
         uses: orbitcluster/oc-cicd-sonarscan-workflow@fix/accomodatewfcall
         with:
