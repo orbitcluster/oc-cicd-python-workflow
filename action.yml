@@ -1,9 +1,25 @@
 name: "Build and Test"
 description: "Build and Test the application"
 inputs:
+  app-name:
+    description: "Name of the image"
+    required: false
+    default: ${{ github.repository }}
+  appid:
+    description: "Application ID"
+    required: false
+    default: "0"
+  orgid:
+    description: "Organization ID"
+    required: false
+    default: "0"
+  buid:
+    description: "Business Unit ID"
+    required: false
+    default: "0"
   test-directory:
     description: "Directory containing tests"
-    required: true
+    required: false
     default: "test"
   sonar-source-path:
     description: "Path to the source code for SonarQube scan"
@@ -31,7 +47,6 @@ runs:
       if: github.event_name == 'push' || github.event_name == 'pull_request'
       uses: orbitcluster/oc-cicd-secretscanner-workflow@v2
       with:
-        fetch-depth: 0
         github-token: ${{ github.token }}
 
     - name: SonarQube Check
@@ -39,3 +54,18 @@ runs:
       uses: orbitcluster/oc-cicd-sonarscan-workflow@v1
       with:
         sonar-source-path: ${{ inputs.sonar-source-path }}
+
+    - name: SAST Scan
+      if: github.event_name == 'push' || github.event_name == 'pull_request'
+      uses: orbitcluster/oc-cicd-sast-workflow@v1
+      with:
+        language: python
+
+    - name: Docker Build
+      uses: orbitcluster/oc-cicd-docker-build-workflow@v1
+      with:
+        docker-build-path: .
+        image-name: ${{ inputs.app-name }}
+        appid: ${{ inputs.appid }}
+        orgid: ${{ inputs.orgid }}
+        buid: ${{ inputs.buid }}
