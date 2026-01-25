@@ -61,26 +61,29 @@ jobs:
         with:
           sonar-source-path: ${{ inputs.sonar-source-path }}
 
-  # sast-scan:
-  #   name: SAST Scan
-  #   runs-on: ubuntu-latest
-  #   if: github.event_name == 'push' || github.event_name == 'pull_request'
-  #   steps:
-  #     - name: Set up Python
-  #       uses: actions/setup-python@v5
-  #       with:
-  #         python-version-file: ".python-version"
+  sast-scan:
+    name: SAST Scan
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' || github.event_name == 'pull_request'
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v6
 
-  #     - name: Install dependencies
-  #       shell: bash
-  #       run: |
-  #         python -m pip install --upgrade pip
-  #         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version-file: ".python-version"
 
-  #     - name: SAST Scan
-  #       uses: orbitcluster/oc-cicd-sast-workflow@v1
-  #       with:
-  #         language: python
+      - name: Install dependencies
+        shell: bash
+        run: |
+          python -m pip install --upgrade pip
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+
+      - name: SAST Scan
+        uses: orbitcluster/oc-cicd-sast-workflow@fix/accomodatewfcall
+        with:
+          language: python
 
   # docker-build:
   #   name: Docker Build
