@@ -33,39 +33,56 @@ runs:
       uses: actions/checkout@v6
 
     - name: Set up Python
+      id: setup-python
       uses: actions/setup-python@v5
       with:
         python-version-file: ".python-version"
 
     - name: Install dependencies
+      id: install-dependencies
       shell: bash
       run: |
         python -m pip install --upgrade pip
         pip install -r requirements.txt
 
     - name: Secrets Check
+      id: secrets-check
       if: github.event_name == 'push' || github.event_name == 'pull_request'
       uses: orbitcluster/oc-cicd-secretscanner-workflow@v2
       with:
         github-token: ${{ github.token }}
 
     - name: SonarQube Check
+      id: sonarqube-check
       if: github.event_name == 'push' || github.event_name == 'pull_request'
       uses: orbitcluster/oc-cicd-sonarscan-workflow@v1
       with:
         sonar-source-path: ${{ inputs.sonar-source-path }}
 
     - name: SAST Scan
+      id: sast-scan
       if: github.event_name == 'push' || github.event_name == 'pull_request'
       uses: orbitcluster/oc-cicd-sast-workflow@v1
       with:
         language: python
 
     - name: Docker Build
+      id: docker-build
       uses: orbitcluster/oc-cicd-docker-build-workflow@v1
       with:
         docker-build-path: .
         image-name: ${{ inputs.app-name }}
+        appid: ${{ inputs.appid }}
+        orgid: ${{ inputs.orgid }}
+        buid: ${{ inputs.buid }}
+
+    - name: Docker Push
+      id: docker-push
+      uses: orbitcluster/oc-cicd-docker-push-workflow@feat/push_init
+      with:
+        image-type: docker
+        image-name: ${{ inputs.app-name }}
+        tag: ${{ env.DOCKER_TAG }}
         appid: ${{ inputs.appid }}
         orgid: ${{ inputs.orgid }}
         buid: ${{ inputs.buid }}
