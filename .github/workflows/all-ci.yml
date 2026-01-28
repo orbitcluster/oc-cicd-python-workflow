@@ -33,14 +33,15 @@ on:
         required: false
         default: "src"
         type: string
-      role-to-assume:
-        description: "Role to assume"
-        required: true
-        type: string
       region:
         description: "Region"
         required: false
         default: "us-east-1"
+        type: string
+    secrets:
+      role-to-assume:
+        description: "Role to assume"
+        required: true
         type: string
 
 jobs:
@@ -123,3 +124,4 @@ jobs:
           appid: ${{ inputs.appid }}
           orgid: ${{ inputs.orgid }}
           buid: ${{ inputs.buid }}
+          role-to-assume: ${{ secrets.role-to-assume }}
