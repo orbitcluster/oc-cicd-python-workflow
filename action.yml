@@ -25,6 +25,15 @@ inputs:
     description: "Path to the source code for SonarQube scan"
     required: false
     default: "src"
+  role-to-assume:
+    description: "Role to assume"
+    required: true
+    type: string
+  region:
+    description: "Region"
+    required: false
+    default: "us-east-1"
+    type: string
 
 runs:
   using: "composite"
