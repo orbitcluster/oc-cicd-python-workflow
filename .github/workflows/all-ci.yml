@@ -33,6 +33,15 @@ on:
         required: false
         default: "src"
         type: string
+      region:
+        description: "Region"
+        required: false
+        default: "us-east-1"
+        type: string
+    secrets:
+      role-to-assume:
+        description: "Role to assume"
+        required: true
 
 jobs:
   secrets-check:
@@ -85,15 +94,17 @@ jobs:
         with:
           language: python
 
-  docker-build:
+  docker-build-push:
     name: Docker Build
     runs-on: ubuntu-latest
     needs: [secrets-check, sonarqube-check, sast-scan]
+    env:
+      DOCKER_TAG: ""
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v6
 
-      - name: Docker Build and Push
+      - name: Docker Build
         uses: orbitcluster/oc-cicd-docker-build-workflow@v1
         with:
           docker-build-path: .
@@ -101,3 +112,15 @@ jobs:
           appid: ${{ inputs.appid }}
           orgid: ${{ inputs.orgid }}
           buid: ${{ inputs.buid }}
+
+      - name: Docker Push
+        id: docker-push
+        uses: orbitcluster/oc-cicd-docker-push-workflow@v1
+        with:
+          image-type: docker
+          image-name: ${{ inputs.app-name }}
+          tag: ${{ env.DOCKER_TAG }}
+          appid: ${{ inputs.appid }}
+          orgid: ${{ inputs.orgid }}
+          buid: ${{ inputs.buid }}
+          role-to-assume: ${{ secrets.role-to-assume }}
