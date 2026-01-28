@@ -95,3 +95,4 @@ runs:
         appid: ${{ inputs.appid }}
         orgid: ${{ inputs.orgid }}
         buid: ${{ inputs.buid }}
+        role-to-assume: ${{ inputs.role-to-assume }}
