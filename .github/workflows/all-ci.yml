@@ -42,7 +42,6 @@ on:
       role-to-assume:
         description: "Role to assume"
         required: true
-        type: string
 
 jobs:
   secrets-check:
