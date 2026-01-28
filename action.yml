@@ -87,7 +87,7 @@ runs:
 
     - name: Docker Push
       id: docker-push
-      uses: orbitcluster/oc-cicd-docker-push-workflow@feat/push_init
+      uses: orbitcluster/oc-cicd-docker-push-workflow@v1
       with:
         image-type: docker
         image-name: ${{ inputs.app-name }}
