@@ -33,10 +33,6 @@ inputs:
     description: "Region"
     required: false
     default: "us-east-1"
-  region:
-    description: "Region"
-    required: false
-    default: "us-east-1"
     type: string
 
 runs:
