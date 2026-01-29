@@ -84,7 +84,7 @@ runs:
 
     - name: Docker Build
       id: docker-build
-      uses: orbitcluster/oc-cicd-docker-build-workflow@feat/update_tag_logic
+      uses: orbitcluster/oc-cicd-docker-build-workflow@v1
       with:
         docker-build-path: .
         image-name: ${{ inputs.app-name }}
@@ -95,7 +95,7 @@ runs:
 
     - name: Docker Push
       id: docker-push
-      uses: orbitcluster/oc-cicd-docker-push-workflow@feat/add_helm_push
+      uses: orbitcluster/oc-cicd-docker-push-workflow@v1
       with:
         image_type: docker
         image-name: ${{ inputs.app-name }}
@@ -104,7 +104,7 @@ runs:
         orgid: ${{ inputs.orgid }}
         buid: ${{ inputs.buid }}
         role-to-assume: ${{ inputs.role-to-assume }}
-        # Logic: 
+        # Logic:
         # If Main: Push (default)
         # If Branch: Cleanup
         action_type: ${{ github.event_name == 'pull_request' && 'cleanup' || 'push' }}
