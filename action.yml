@@ -39,7 +39,14 @@ runs:
   using: "composite"
   steps:
     - name: Checkout
-      uses: actions/checkout@v6
+      uses: actions/checkout@v4
+
+    - name: Semantic Release
+      id: semver
+      uses: orbitcluster/oc-cicd-release-workflow@v1
+      with:
+        dry-run: ${{ github.ref_name != 'main' }}
+        github-token: ${{ github.token }}
 
     - name: Set up Python
       id: setup-python
@@ -81,6 +88,7 @@ runs:
       with:
         docker-build-path: .
         image-name: ${{ inputs.app-name }}
+        tag-override: ${{ github.ref_name == 'main' && steps.semver.outputs.release-version || '' }}
         appid: ${{ inputs.appid }}
         orgid: ${{ inputs.orgid }}
         buid: ${{ inputs.buid }}
@@ -89,10 +97,15 @@ runs:
       id: docker-push
       uses: orbitcluster/oc-cicd-docker-push-workflow@v1
       with:
-        image-type: docker
+        image_type: docker
         image-name: ${{ inputs.app-name }}
-        tag: ${{ env.DOCKER_TAG }}
+        tag: ${{ steps.docker-build.outputs.docker-tag }}
         appid: ${{ inputs.appid }}
         orgid: ${{ inputs.orgid }}
         buid: ${{ inputs.buid }}
         role-to-assume: ${{ inputs.role-to-assume }}
+        # Logic:
+        # If Main: Push (default)
+        # If Branch: Cleanup
+        action_type: ${{ github.event_name == 'pull_request' && 'cleanup' || 'push' }}
+        branch-name: ${{ steps.docker-build.outputs.safe-branch }}
