@@ -47,7 +47,6 @@ jobs:
   secrets-check:
     name: Secrets Check
     runs-on: ubuntu-latest
-    if: github.event_name == 'push' || github.event_name == 'pull_request'
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v6
@@ -60,7 +59,6 @@ jobs:
   sonarqube-check:
     name: SonarQube Check
     runs-on: ubuntu-latest
-    if: github.event_name == 'push' || github.event_name == 'pull_request'
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v6
@@ -73,7 +71,6 @@ jobs:
   sast-scan:
     name: SAST Scan
     runs-on: ubuntu-latest
-    if: github.event_name == 'push' || github.event_name == 'pull_request'
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v6
@@ -120,6 +117,7 @@ jobs:
 
       - name: Docker Build
         id: docker-build
+        if: ${{ github.event.action != 'closed' }}
         uses: orbitcluster/oc-cicd-docker-build-workflow@v1
         with:
           docker-build-path: .
@@ -128,9 +126,11 @@ jobs:
           appid: ${{ inputs.appid }}
           orgid: ${{ inputs.orgid }}
           buid: ${{ inputs.buid }}
+          build-image: ${{ github.event.action != 'closed' }}
 
-      - name: Docker Push / Cleanup
+      - name: Docker Push
         id: docker-push
+        if: ${{ github.event.action != 'closed' }}
         uses: orbitcluster/oc-cicd-docker-push-workflow@v1
         with:
           image_type: docker
@@ -140,5 +140,20 @@ jobs:
           orgid: ${{ inputs.orgid }}
           buid: ${{ inputs.buid }}
           role-to-assume: ${{ secrets.role-to-assume }}
-          action_type: ${{ github.event_name == 'pull_request' && 'cleanup' || 'push' }}
+          action_type: push
+          branch-name: ${{ steps.docker-build.outputs.safe-branch }}
+
+      - name: Docker Cleanup
+        id: docker-cleanup
+        if: ${{ github.event.action == 'closed' }}
+        uses: orbitcluster/oc-cicd-docker-push-workflow@v1
+        with:
+          image_type: docker
+          image-name: ${{ inputs.app-name }}
+          tag: ${{ steps.docker-build.outputs.docker-tag }}
+          appid: ${{ inputs.appid }}
+          orgid: ${{ inputs.orgid }}
+          buid: ${{ inputs.buid }}
+          role-to-assume: ${{ secrets.role-to-assume }}
+          action_type: cleanup
           branch-name: ${{ steps.docker-build.outputs.safe-branch }}
