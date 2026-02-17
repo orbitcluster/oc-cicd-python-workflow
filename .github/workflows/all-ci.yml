@@ -135,7 +135,7 @@ jobs:
       - name: Docker Push
         id: docker-push
         if: ${{ github.event.action != 'closed' }}
-        uses: orbitcluster/oc-cicd-docker-push-workflow@v1
+        uses: orbitcluster/oc-cicd-image-push-workflow@v1
         with:
           image_type: docker
           image-name: ${{ inputs.app-name }}
@@ -150,7 +150,7 @@ jobs:
       - name: Docker Cleanup
         id: docker-cleanup
         if: ${{ github.event.action == 'closed' }}
-        uses: orbitcluster/oc-cicd-docker-push-workflow@v1
+        uses: orbitcluster/oc-cicd-image-push-workflow@v1
         with:
           image_type: docker
           image-name: ${{ inputs.app-name }}
