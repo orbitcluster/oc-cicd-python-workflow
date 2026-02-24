@@ -139,7 +139,7 @@ jobs:
         with:
           image_type: docker
           image-name: ${{ inputs.app-name }}
-          tag: ${{ steps.docker-build.outputs.docker-tag }}
+          tags: ${{ steps.docker-build.outputs.docker-tags }}
           appid: ${{ inputs.appid }}
           orgid: ${{ inputs.orgid }}
           buid: ${{ inputs.buid }}
@@ -154,7 +154,7 @@ jobs:
         with:
           image_type: docker
           image-name: ${{ inputs.app-name }}
-          tag: ${{ steps.docker-build.outputs.docker-tag }}
+          tags: ${{ steps.docker-build.outputs.docker-tags }}
           appid: ${{ inputs.appid }}
           orgid: ${{ inputs.orgid }}
           buid: ${{ inputs.buid }}
